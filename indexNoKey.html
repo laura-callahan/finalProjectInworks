@@ -1,0 +1,105 @@
+<!DOCTYPE html>	
+<html lang="en-US" dir="ltr">  <!--direction of language l to r-->
+
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<title>
+		Final Stuff
+	</title>
+	
+</head>
+
+<body onload="javascript:searchFlickrTags()">
+	<img src="" id="image1">
+
+
+	<script>
+	//add "weather" as param
+		function searchFlickrTags()
+		{
+
+			var xmlHttp = new XMLHttpRequest();
+			var apiKey = '';
+			var apiURL = 'https://api.flickr.com/services/rest/';
+			var apiMethod = 'flickr.photos.search';
+			//var currWeather = weather;
+			var url = apiURL+'?method='+apiMethod+'&api_key='+apiKey;
+			var UrlWithParameters = url+'&tags=rain&safe_search=1&content_type=1&format=json&nojsoncallback=1';
+
+			xmlHttp.onreadystatechange = function() { 
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200){
+					jsonFlickrApi(xmlHttp.responseText);
+					
+				}
+
+			};
+   			xmlHttp.open("GET", UrlWithParameters, true); // true for asynchronous 
+   			xmlHttp.send();
+   		}
+
+   		function jsonFlickrApi(flickrData){
+   			var data = JSON.parse(flickrData);
+   			var farmId, serverId, photoId, secret;
+
+
+			//store in another json
+			var photoJsonArray = [];
+			
+
+			for (var i = 0; i < data.photos.photo.length; i++){
+				var dataArray = {};
+
+				farmId = data.photos.photo[i].farm;
+				dataArray["farm"] = farmId;
+
+				serverId = data.photos.photo[i].server;
+				dataArray["server"] = serverId;
+
+				photoId = data.photos.photo[i].id;
+				dataArray["id"] = photoId;
+
+				secret = data.photos.photo[i].secret;
+				dataArray["secret"] = secret;
+
+				
+				photoJsonArray.push(dataArray);
+
+			}
+			
+			var a = 0;
+
+			function changeImage(){
+
+				farmId = data.photos.photo[a].farm;
+
+				serverId = data.photos.photo[a].server;
+
+				photoId = data.photos.photo[a].id;
+
+				secret = data.photos.photo[a].secret;
+				var imgUrl = "https://farm"+farmId+".staticflickr.com/"+serverId+"/"+photoId+"_"+secret+".jpg";
+
+				document.getElementById("image1").src = imgUrl;
+				a++;
+			}
+			setInterval(changeImage, 3000);
+
+
+
+
+
+
+
+
+
+
+
+
+		}
+	</script>
+</body>
+
+<footer>
+	
+</footer>
+</html>
